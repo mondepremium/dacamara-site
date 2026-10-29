@@ -4992,5 +4992,26 @@ html body #laboratoire .lp-nav, html body #laboratoire .lp-nav * { white-space: 
 /* Neold : la planche ne défile plus toute seule, c'est la liste qui défile */
 html body #laboratoire .nm-grid { max-height: none !important; height: auto !important; overflow: visible !important; -webkit-mask-image: none !important; mask-image: none !important; }
 </style>
+<script>
+  /* toutes les listes descendent exactement jusqu'au trait du footer, quel que soit le moment (chargement, retour, redimensionnement) */
+  (function () {
+    const band = document.getElementById('band'), ft = document.querySelector('footer'); if (!band || !ft) return;
+    const ids = ['video', 'laboratoire', 'redaction', 'photo'];
+    function syncAll() {
+      if (!document.body.classList.contains('wheel')) return;
+      const r = ft.getBoundingClientRect(); if (!r.height) return;
+      const line = r.top + (parseFloat(ft.style.getPropertyValue('--tabT')) || 0), top0 = band.getBoundingClientRect().top;
+      ids.forEach(id => { const sec = document.getElementById(id); if (!sec) return;
+        const h = Math.max(200, line - (top0 + sec.offsetTop));
+        if (Math.abs((parseFloat(sec.style.height) || 0) - h) > .5) sec.style.setProperty('height', h.toFixed(1) + 'px', 'important'); });
+    }
+    window.__syncAll = syncAll;
+    const burst = () => { syncAll(); [60, 250, 600, 1200, 2000].forEach(d => setTimeout(syncAll, d)); };
+    burst(); addEventListener('load', burst); addEventListener('resize', burst);
+    if (document.fonts) document.fonts.ready.then(burst);
+    ids.forEach(id => { const sec = document.getElementById(id); if (sec) new MutationObserver(() => syncAll()).observe(sec, { attributes: true, attributeFilter: ['class', 'style', 'data-ready'] }); });
+    new MutationObserver(burst).observe(ft, { attributes: true, attributeFilter: ['style'] });
+  })();
+</script>
 </body>
 </html>
