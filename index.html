@@ -2643,7 +2643,7 @@
     function build() {
       const small = innerWidth <= 760, T = small ? 30 : 32, base = small ? 150 : 172, flat = small ? 46 : 54;
       ft.style.setProperty('--tabT', T + 'px');
-      ft.style.setProperty('padding-top', (pad0 + T) + 'px', 'important');
+      ft.style.setProperty('padding-top', (14 + T) + 'px', 'important');
       const W = ft.offsetWidth, H = ft.offsetHeight, cx = W / 2, a = cx - base / 2, b = cx + base / 2, p = cx - flat / 2, q = cx + flat / 2;
       const s1 = (p - a) * .55, f = n => n.toFixed(2);
       /* épaule : part à plat du bord, monte, arrive à plat sur le plateau (tangentes horizontales aux deux bouts) */
