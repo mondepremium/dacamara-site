@@ -4547,7 +4547,7 @@ html body footer.has-tab .fglass, html body footer .fglass { clip-path: inset(ca
     const total = FILMS.length + 1, pad = n => String(n).padStart(2, '0');
     FILMS.forEach((f, i) => {
       const s = document.createElement('article'); s.className = 'vslide vfilm'; s.dataset.film = f.id;
-      s.innerHTML = '<button class="vf-media" style="background-image:url(' + P(f.id) + ')" type="button" aria-label="Voir le film ' + f.t + '"><video muted loop playsinline preload="none" poster="' + P(f.id) + '" src="' + B(f.id) + '"></video></button>' +
+      s.innerHTML = '<button class="vf-media" style="background-image:url(' + P(f.id) + ')" type="button" aria-label="Voir le film ' + f.t + '"><video muted loop playsinline preload="metadata" autoplay src="' + B(f.id) + '"></video></button>' +
         '<div class="vf-txt"><span class="vf-n">' + pad(i + 2) + '/' + pad(total) + '</span><h3>' + f.t + '</h3><p class="vf-kind">' + f.type + '</p><p class="vf-roles">' + f.roles.join(', ') + '</p><button class="vf-go" type="button">▶ voir le film</button></div>';
       sec.appendChild(s);
       s.querySelectorAll('.vf-media, .vf-go').forEach(el => el.addEventListener('click', e => { e.stopPropagation(); openFilm(f); }));
@@ -4783,7 +4783,7 @@ html body footer.has-tab .fglass, html body footer .fglass { clip-path: inset(ca
       let media;
       if (f.k === 'book') media = '<button class="vf-media" type="button" aria-label="Lire le dossier" style="background-image:url(' + (cover.currentSrc || cover.src) + ')"></button>';
       else if (f.k === 'dteye') media = '<a class="vf-media" href="' + f.href + '" target="_blank" rel="noopener" aria-label="Ouvrir l’application D-TEYE" style="background-image:url(' + (dimg ? dimg.src : '') + ')"></a>';
-      else media = '<button class="vf-media" type="button" aria-label="Voir ' + f.t + '" style="background-image:url(' + __vf.P(f.id) + ')"><video muted loop playsinline preload="none" poster="' + __vf.P(f.id) + '" src="' + __vf.B(f.id) + '"></video></button>';
+      else media = '<button class="vf-media" type="button" aria-label="Voir ' + f.t + '" style="background-image:url(' + __vf.P(f.id) + ')"><video muted loop playsinline preload="metadata" autoplay src="' + __vf.B(f.id) + '"></video></button>';
       const go = f.href ? '<a class="vf-go" href="' + f.href + '" target="_blank" rel="noopener">' + f.go + '</a>' : '<button class="vf-go" type="button">' + (f.go || '▶ voir la vidéo') + '</button>';
       a.innerHTML = media + '<div class="vf-txt"><span class="vf-n">' + pad(i + 1) + '/' + pad(L.length) + '</span><h3>' + f.t + '</h3><p class="vf-kind">' + f.kind + '</p><p class="vf-roles">' + f.roles + '</p>' + go + '</div>';
       const open = e => { e.stopPropagation(); if (f.k === 'book') book.click(); else if (!f.k) __vf.open(f); };
@@ -4829,7 +4829,7 @@ html body footer.has-tab .fglass, html body footer .fglass { clip-path: inset(ca
       const a = document.createElement('article'); a.className = 'vslide vfilm cr-it pp-' + f.k;
       let media;
       if (f.k === 'gal') { const sea = document.querySelector('#galov .ph[data-i="4"] img'); media = '<button class="vf-media pp-sea" type="button" aria-label="Voir la galerie" style="background-image:url(' + (sea ? sea.currentSrc || sea.src : '') + ')"></button>'; }
-      else media = '<button class="vf-media" type="button" aria-label="Voir ' + f.t.replace('<br>', ' ') + '" style="background-image:url(' + __vf.P(f.id) + ')"><video muted loop playsinline preload="none" poster="' + __vf.P(f.id) + '" src="' + __vf.B(f.id) + '"></video></button>';
+      else media = '<button class="vf-media" type="button" aria-label="Voir ' + f.t.replace('<br>', ' ') + '" style="background-image:url(' + __vf.P(f.id) + ')"><video muted loop playsinline preload="metadata" autoplay src="' + __vf.B(f.id) + '"></video></button>';
       const go = f.eps ? '<span class="pp-eps">' + f.eps.map((e, k) => '<button class="vf-go pp-ep" type="button" data-k="' + k + '" title="' + e.t.replace(/&shy;/g, '') + '">▶ vidéo ' + (k + 1) + '</button>').join('') + '</span>' : f.href ? '<a class="vf-go" href="' + f.href + '" target="_blank" rel="noopener">' + f.go + '</a>' : '<button class="vf-go" type="button">' + f.go + '</button>';
       const more = f.more ? '<a class="vf-go pp-more" href="' + f.more.href + '" target="_blank" rel="noopener">' + f.more.label + '</a>' : '';
       a.innerHTML = media + '<div class="vf-txt"><span class="vf-n">' + pad(i + 1) + '/' + pad(L.length) + '</span><h3>' + f.t + '</h3><p class="vf-kind">' + f.kind + '</p><p class="vf-roles">' + f.roles + '</p><span class="pp-btns">' + go + more + '</span></div>';
@@ -4876,7 +4876,7 @@ html body footer.has-tab .fglass, html body footer .fglass { clip-path: inset(ca
     document.querySelectorAll('.xp-films').forEach(box => {
       box.dataset.films.split(',').forEach(id => { const f = Object.assign({ id }, INFO[id] || { t: id, type: '' });
         const b = document.createElement('button'); b.type = 'button'; b.className = 'xp-f'; b.setAttribute('aria-label', 'Voir ' + f.t);
-        b.innerHTML = '<span class="xp-m" style="background-image:url(' + __vf.P(id) + ')"><video muted loop playsinline preload="none" poster="' + __vf.P(id) + '" src="' + __vf.B(id) + '"></video></span><span class="xp-c"><b>' + f.t + '</b> ▶</span>';
+        b.innerHTML = '<span class="xp-m" style="background-image:url(' + __vf.P(id) + ')"><video muted loop playsinline preload="metadata" autoplay src="' + __vf.B(id) + '"></video></span><span class="xp-c"><b>' + f.t + '</b> ▶</span>';
         b.addEventListener('click', e => { e.stopPropagation(); __vf.open(f); }); box.appendChild(b); });
       const li = box.closest('.lp'), vids = [...box.querySelectorAll('video')];
       new MutationObserver(() => { const on = li.classList.contains('open'); vids.forEach(v => on ? v.play().catch(() => {}) : v.pause()); }).observe(li, { attributes: true, attributeFilter: ['class'] });
@@ -4955,15 +4955,19 @@ html body footer.has-tab .fglass, html body footer .fglass { clip-path: inset(ca
   (function () {
     const SK = ['vidéo', 'photo', 'motion / design', 'conception-rédaction', 'communication digitale', 'community management', 'création et gestion de sites web', 'création sonore', 'mixage'];
     const P = document.createElement('div'); P.className = 'fdc-pop'; P.hidden = true; P.setAttribute('role', 'dialog'); P.setAttribute('aria-modal', 'true'); P.setAttribute('aria-label', 'François Da Camara');
-    P.innerHTML = '<div class="fdc-card"><div class="fdc-ph" role="img" aria-label="François Da Camara, souffleur à la main"></div>' +
-      '<button class="fdc-x" type="button" aria-label="Fermer"></button><div class="fdc-tx"><div class="fdc-id"><span class="fdc-eye" aria-hidden="true"></span><div><p class="fdc-fn">FRANÇOIS</p><h2 class="fdc-ln">DA CAMARA</h2></div></div>' +
+    P.innerHTML = '<div class="fdc-card"><div class="fdc-ph fdc-vid"><video muted loop playsinline preload="auto" src="films/bienvenue.mp4"></video><button class="fdc-snd" type="button" aria-label="Activer le son"><span class="fdc-snd-ic" aria-hidden="true"></span><span class="fdc-snd-t">avec le son</span></button></div>' +
+      '<button class="fdc-x" type="button" aria-label="Fermer"></button><div class="fdc-tx"><p class="fdc-hi">Bienvenue chez moi</p><div class="fdc-id"><span class="fdc-eye" aria-hidden="true"></span><div><p class="fdc-fn">FRANÇOIS</p><h2 class="fdc-ln">DA CAMARA</h2></div></div>' +
       '<p class="fdc-pos">Communicant 360°, spécialisé dans la création numérique et l’audiovisuel.</p>' +
       '<ul class="fdc-sk">' + SK.map(s => '<li>' + s + '</li>').join('') + '</ul>' +
       '<button class="fdc-go" type="button">voir le site <span aria-hidden="true">→</span></button></div></div>';
-    P.querySelector('.fdc-ph').style.backgroundImage = 'url(img/5ac36dd48ac0.jpg)';
+    const FV = P.querySelector('.fdc-vid video'), SB = P.querySelector('.fdc-snd');
+    FV.addEventListener('playing', () => FV.classList.add('go'));
+    SB.addEventListener('click', e => { e.stopPropagation();
+      if (FV.muted) { FV.muted = false; FV.currentTime = 0; FV.play().catch(() => {}); SB.classList.add('on'); SB.querySelector('.fdc-snd-t').textContent = 'couper le son'; SB.setAttribute('aria-label', 'Couper le son'); }
+      else { FV.muted = true; SB.classList.remove('on'); SB.querySelector('.fdc-snd-t').textContent = 'avec le son'; SB.setAttribute('aria-label', 'Activer le son'); } });
     document.body.appendChild(P);
-    const close = () => { P.classList.remove('in'); setTimeout(() => { P.hidden = true; }, 250); document.body.classList.remove('fdc-on'); };
-    const open = () => { P.hidden = false; document.body.classList.add('fdc-on'); requestAnimationFrame(() => P.classList.add('in')); };
+    const close = () => { const v = P.querySelector('.fdc-vid video'); if (v) { v.pause(); v.muted = true; const b = P.querySelector('.fdc-snd'); if (b) { b.classList.remove('on'); b.querySelector('.fdc-snd-t').textContent = 'avec le son'; } } P.classList.remove('in'); setTimeout(() => { P.hidden = true; }, 250); document.body.classList.remove('fdc-on'); };
+    const open = () => { const v = P.querySelector('.fdc-vid video'); if (v) { v.play().catch(() => {}); } P.hidden = false; document.body.classList.add('fdc-on'); requestAnimationFrame(() => P.classList.add('in')); };
     P.querySelector('.fdc-go').addEventListener('click', close);
     P.querySelector('.fdc-x').addEventListener('click', close);
     const mk = document.querySelector('footer .mark'), mv = mk && (mk.style.getPropertyValue('--mark') || getComputedStyle(mk).getPropertyValue('--mark')); if (mv) P.querySelector('.fdc-eye').style.setProperty('--mark', mv);
@@ -5013,5 +5017,56 @@ html body #laboratoire .nm-grid { max-height: none !important; height: auto !imp
     new MutationObserver(burst).observe(ft, { attributes: true, attributeFilter: ['style'] });
   })();
 </script>
+<style id="fix-pop-video">
+/* pop-up : la vidéo du banc remplace la photo */
+.fdc-vid { position: relative; background: #0d1424 url(films/bienvenue-poster.jpg) center 60% / cover no-repeat !important; overflow: hidden; }
+.fdc-vid video { opacity: 0; transition: opacity .3s; } .fdc-vid video.go { opacity: 1; }
+.fdc-vid video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; }
+@media (min-width: 761px) { .fdc-card { grid-template-columns: 300px 420px !important; } .fdc-ph.fdc-vid { min-height: 534px !important; } }
+.fdc-hi { margin: 0 0 14px; font: 500 10.5px/1 var(--mono); letter-spacing: .16em; text-transform: uppercase; color: var(--muted); }
+/* bouton son bien visible */
+.fdc-snd { position: absolute; left: 50%; bottom: 18px; transform: translateX(-50%); z-index: 2; display: inline-flex; align-items: center; gap: 10px;
+  padding: 11px 16px 11px 13px; background: var(--bg); color: var(--ink); border: 1px solid var(--ink); cursor: pointer; white-space: nowrap;
+  font: 600 11px/1 var(--mono); letter-spacing: .14em; text-transform: uppercase; box-shadow: 0 0 0 4px rgba(236,233,226,.25); animation: fdcPulse 2.2s ease-in-out infinite; }
+.fdc-snd:hover { background: var(--ink); color: var(--bg); }
+.fdc-snd.on { animation: none; background: rgba(18,20,22,.75); color: #ECE9E2; border-color: rgba(236,233,226,.6); box-shadow: none; padding: 8px 12px 8px 10px; font-size: 9.5px; }
+.fdc-snd-ic { position: relative; width: 14px; height: 12px; flex: none; }
+.fdc-snd-ic::before { content: ""; position: absolute; left: 0; top: 3px; width: 4px; height: 6px; background: currentColor; }
+.fdc-snd-ic::after { content: ""; position: absolute; left: 3px; top: 0; border-right: 6px solid currentColor; border-top: 6px solid transparent; border-bottom: 6px solid transparent; }
+@keyframes fdcPulse { 0%, 100% { box-shadow: 0 0 0 0 rgba(236,233,226,.55); } 50% { box-shadow: 0 0 0 8px rgba(236,233,226,0); } }
+@media (prefers-reduced-motion: reduce) { .fdc-snd { animation: none; } }
+@media (max-width: 760px) {
+  .fdc-ph.fdc-vid { height: min(46svh, 380px) !important; }
+  .fdc-vid video { object-fit: cover; object-position: center 60%; }
+  .fdc-snd { bottom: 12px; }
+  .fdc-hi { margin-bottom: 10px; }
+}
+</style>
+<script>
+  /* aperçus : relance fiable sur téléphone (iPhone met parfois les vidéos en pause ou refuse le premier play) */
+  (function () {
+    const loops = () => [...document.querySelectorAll('main#band video[loop], #laboratoire video[loop]')].filter(v => v.id !== 'reelpreview');
+    const seen = new WeakSet();
+    const wire = v => { if (seen.has(v)) return; seen.add(v); v.muted = true; v.setAttribute('muted', ''); v.playsInline = true;
+      v.addEventListener('playing', () => v.classList.add('go')); if (!v.paused && v.readyState > 2) v.classList.add('go'); };
+    function visible(v) {
+      if (!v.offsetParent) return false;
+      const sec = v.closest('main#band > section'); if (sec && !sec.classList.contains('cur')) return false;
+      const lp = v.closest('.lp'); if (lp && !lp.classList.contains('open')) return false;
+      if (document.querySelector('.nmv:not([hidden]), .fdc-pop:not([hidden]), #galov:not([hidden])')) return false;
+      const r = v.getBoundingClientRect(); return r.height > 20 && r.bottom > 40 && r.top < innerHeight - 40;
+    }
+    function tick() { if (document.hidden) return; loops().forEach(v => { wire(v); if (v.paused && visible(v)) v.play().catch(() => {}); }); }
+    setInterval(tick, 1200); addEventListener('load', tick);
+    ['touchstart', 'touchend', 'scroll', 'click'].forEach(ev => addEventListener(ev, () => { tick(); setTimeout(tick, 150); }, { passive: true, capture: true }));
+    document.addEventListener('visibilitychange', tick);
+  })();
+</script>
+<style>
+/* tant qu'un aperçu ne tourne pas, on voit l'image de couverture (posée en fond, jamais déformée) */
+html body .vf-media video, html body .xp-m video, html body .cr-vm video { opacity: 0; transition: opacity .35s ease; }
+html body .vf-media video.go, html body .xp-m video.go, html body .cr-vm video.go { opacity: 1; }
+html body .xp-m, html body .vf-media { background-size: cover !important; background-position: center !important; }
+</style>
 </body>
 </html>
