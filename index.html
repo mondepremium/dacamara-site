@@ -4366,7 +4366,7 @@ html body.wheel main#band > section:not(.cur) > * { -webkit-mask-image: linear-g
 /* premier élément de conception-rédaction et projets perso : centré à la même hauteur que le showreel */
 @media (min-width: 761px) {
   html body #redaction .vfilm.cr-book { padding-top: calc(56px + (min(400px, 48svh) - min(340px, 40svh)) / 2) !important; }
-  html body #photo .vfilm.pp-gal { padding-top: calc(56px + (min(400px, 48svh) - min(250px, 34svh)) / 2) !important; }
+  html body #photo .vfilm.pp-first { padding-top: calc(56px + (min(400px, 48svh) - min(250px, 34svh)) / 2) !important; }
 }
 /* conception-rédaction en voisin : la suite reste visible jusqu'au footer */
 html body.wheel main#band > section#redaction.crlist:not([data-ready]) .vfilm ~ .vfilm ~ .vfilm { visibility: visible !important; }
@@ -4375,7 +4375,7 @@ html body #laboratoire.lp-split .lp-in.more { -webkit-mask-image: none !importan
 @media (min-width: 761px) {
   html body #video.reel-as-film .vfilm.vreel { padding-top: 76px !important; }
   html body #redaction .vfilm.cr-book { padding-top: calc(76px + (min(400px, 48svh) - min(340px, 40svh)) / 2) !important; }
-  html body #photo .vfilm.pp-gal { padding-top: calc(76px + (min(400px, 48svh) - min(250px, 34svh)) / 2) !important; }
+  html body #photo .vfilm.pp-first { padding-top: calc(76px + (min(400px, 48svh) - min(250px, 34svh)) / 2) !important; }
 }
 /* expériences en voisin : la liste entière, sans coupe */
 
@@ -4384,8 +4384,10 @@ html body.wheel main#band > #laboratoire:is(:not(.cur), :not([data-ready])) .lab
 html body.wheel main#band > #laboratoire { padding-bottom: 0 !important; }
 html body.wheel #laboratoire.lp-split .lab, html body.wheel #laboratoire.lp-split .lab.lab-scroll { max-height: 100% !important; }
 /* photos : alignées en haut sur la bande démo (plus petites, centrées elles paraissaient trop basses) */
-@media (min-width: 761px) { html body #photo .vfilm.pp-gal { padding-top: 76px !important; } }
+@media (min-width: 761px) { html body #photo .vfilm.pp-first { padding-top: 76px !important; } }
 html body #photo .pp-gal .vf-kind:empty, html body #photo .pp-gal .vf-roles:empty { display: none; }
+/* téléphone : le texte des séries part du haut du visuel (sinon il remonte sur les onglets) */
+@media (max-width: 760px) { html body #photo .pp-series .vf-txt, html body #photo .pp-series > .vf-media { align-self: start !important; } }
 html body.wheel main#band > section[data-leaving], html body.wheel main#band > section .lab[data-leaving] { overflow-y: auto !important; overflow-x: hidden !important; }
 html body.wheel main#band > :is(#video, #redaction, #photo, #laboratoire)[data-leaving][data-leaving], html body.wheel main#band > #laboratoire .lab[data-leaving][data-leaving] { overflow-y: auto !important; overflow-x: hidden !important; }
 html body.wheel main#band > section:is(#video, #redaction, #photo, #laboratoire)[data-leaving][data-leaving][data-leaving] { overflow-y: auto !important; overflow-x: hidden !important; }
@@ -4815,6 +4817,10 @@ html body footer.has-tab .fglass, html body footer .fglass { clip-path: inset(ca
     const sec = document.getElementById('photo'), stack = sec && sec.querySelector('.t-stack'); if (!sec || !stack || !window.__vf) return;
     const aff = document.querySelector('#plaff img');
     const L = [
+      { k: 'series', id: 'jambes', t: 'MINI-SÉRIE<br>ANIMÉE', kind: 'Série', roles: 'écriture, direction artistique, collage, animation, montage, son', lab: 'épisode', eps: [
+        { id: 'jambes', t: 'Avoir des jambes', type: 'Mini-série animée · épisode 1 · Avoir des jambes' },
+        { id: 'oeil', t: 'Mon œil', type: 'Mini-série animée · épisode 2 · Mon œil' },
+        { id: 'encore', t: 'Encore un peu de temps', type: 'Mini-série animée · épisode 3 · Encore un peu de temps' } ] },
       { k: 'gal', t: 'PHOTOS', kind: '', roles: '', go: '<span class="cr-mh">voir la </span>galerie' },
       { k: 'place', id: 'laplace', t: 'COURT<br>MÉTRAGE', kind: 'La Place · 2<sup>e</sup> place au concours Kino Session', roles: 'scénario, réalisation, production, montage, casting, musique', type: 'Teaser · court métrage La Place', go: '▶ voir le film', href: 'https://www.youtube.com/watch?v=uNDLnMvmRxs&t=30s' },
       { k: 'deso', id: 'deso', t: 'PROJET<br>MUSICAL', kind: 'Deso pour le mix · EP vol.1', roles: 'ingé son, prod, paroles, interprétation, enregistrement, clips, DA', go: 'mondepremium.com', href: 'https://mondepremium.com' },
@@ -4826,11 +4832,11 @@ html body footer.has-tab .fglass, html body footer .fglass { clip-path: inset(ca
     const pad = n => String(n).padStart(2, '0');
     sec.classList.add('vsnap', 'crlist', 'perso');
     L.forEach((f, i) => {
-      const a = document.createElement('article'); a.className = 'vslide vfilm cr-it pp-' + f.k;
+      const a = document.createElement('article'); a.className = 'vslide vfilm cr-it pp-' + f.k + (i === 0 ? ' pp-first' : '');
       let media;
       if (f.k === 'gal') { const sea = document.querySelector('#galov .ph[data-i="4"] img'); media = '<button class="vf-media pp-sea" type="button" aria-label="Voir la galerie" style="background-image:url(' + (sea ? sea.currentSrc || sea.src : '') + ')"></button>'; }
       else media = '<button class="vf-media" type="button" aria-label="Voir ' + f.t.replace('<br>', ' ') + '" style="background-image:url(' + __vf.P(f.id) + ')"><video muted loop playsinline preload="metadata" autoplay src="' + __vf.B(f.id) + '"></video></button>';
-      const go = f.eps ? '<span class="pp-eps">' + f.eps.map((e, k) => '<button class="vf-go pp-ep" type="button" data-k="' + k + '" title="' + e.t.replace(/&shy;/g, '') + '">▶ vidéo ' + (k + 1) + '</button>').join('') + '</span>' : f.href ? '<a class="vf-go" href="' + f.href + '" target="_blank" rel="noopener">' + f.go + '</a>' : '<button class="vf-go" type="button">' + f.go + '</button>';
+      const go = f.eps ? '<span class="pp-eps">' + f.eps.map((e, k) => '<button class="vf-go pp-ep" type="button" data-k="' + k + '" title="' + e.t.replace(/&shy;/g, '') + '">▶ ' + (f.lab || 'vidéo') + ' ' + (k + 1) + '</button>').join('') + '</span>' : f.href ? '<a class="vf-go" href="' + f.href + '" target="_blank" rel="noopener">' + f.go + '</a>' : '<button class="vf-go" type="button">' + f.go + '</button>';
       const more = f.more ? '<a class="vf-go pp-more" href="' + f.more.href + '" target="_blank" rel="noopener">' + f.more.label + '</a>' : '';
       a.innerHTML = media + '<div class="vf-txt"><span class="vf-n">' + pad(i + 1) + '/' + pad(L.length) + '</span><h3>' + f.t + '</h3><p class="vf-kind">' + f.kind + '</p><p class="vf-roles">' + f.roles + '</p><span class="pp-btns">' + go + more + '</span></div>';
       sec.appendChild(a);
@@ -4910,7 +4916,7 @@ html body footer.has-tab .fglass, html body footer .fglass { clip-path: inset(ca
     const off = (el, sec) => { let y = 0; while (el && el !== sec) { y += el.offsetTop; el = el.offsetParent; } return y; };
     function align() {
       const mob = innerWidth <= 760, vid = document.getElementById('video'), reel = vid && vid.querySelector('.vslide-reel .vf');
-      [['redaction', '.cr-book', 't'], ['photo', '.pp-gal', 't']].forEach(([id, sel, mode]) => { const sec = document.getElementById(id), it = sec && sec.querySelector('.vfilm' + sel); if (!it) return;
+      [['redaction', '.cr-book', 't'], ['photo', '.pp-first', 't']].forEach(([id, sel, mode]) => { const sec = document.getElementById(id), it = sec && sec.querySelector('.vfilm' + sel); if (!it) return;
         if (!mob || !reel || !reel.offsetHeight) { it.style.removeProperty('padding-top'); return; }
         it.style.removeProperty('padding-top'); const m = it.querySelector('.vf-media'); if (!m) return;
         if (vid.classList.contains('cur')) { const rr = reel.getBoundingClientRect(), sr = vid.getBoundingClientRect(); if (rr.height) { align.want = rr.top + rr.height / 2 - sr.top; align.top = rr.top - sr.top; } }
