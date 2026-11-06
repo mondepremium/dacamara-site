@@ -5,6 +5,9 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="description" content="Portfolio de François Da Camara, communicant 360° spécialisé dans la création numérique et l’audiovisuel : vidéo, motion design, conception-rédaction, photo.">
 <style>body{margin:0}[hidden]:not([hidden=until-found i]){display:none!important}</style>
+<script>try { if (sessionStorage.getItem('fdc-pop') !== '1') document.documentElement.classList.add('fd-first'); } catch (e) { document.documentElement.classList.add('fd-first'); }</script>
+<style>html.fd-first footer, html.fd-first .fd-veil { opacity: 0 !important; } html.fd-first body::after { content: ""; position: fixed; inset: 0; z-index: 28; background: #ECE9E2; pointer-events: none; }
+html.fd-in body::after { content: ""; position: fixed; inset: 0; z-index: 28; background: #ECE9E2; pointer-events: none; animation: fd-lift .6s ease forwards; } @keyframes fd-lift { to { opacity: 0; } }</style>
 </head>
 <body>
 <style id="pre">body{visibility:hidden}</style>
@@ -1550,6 +1553,7 @@
 
 <button class="burger" id="burger" type="button" aria-label="Menu" aria-expanded="false" aria-controls="menu"><i></i><i></i></button>
 <div class="menu" id="menu" role="dialog" aria-label="Sections"><ul id="menulist"></ul></div>
+<script>window.__ftR = function (f) { var r = f.getBoundingClientRect(), c = window.__fdCur || 0; return { top: r.top - c, bottom: r.bottom - c, height: r.height, left: r.left, right: r.right, width: r.width }; };</script>
 <script>document.body.classList.add("ipop-on")</script>
 <div class="wrap">
   <header>
@@ -2813,7 +2817,7 @@
       const t0 = performance.now();
       (function step(now) {
         const lr = lab.getBoundingClientRect(), ft = document.querySelector('footer');
-        const bottom = Math.min(lr.bottom, ft ? ft.getBoundingClientRect().top - 10 : lr.bottom), mid = (lr.top + bottom) / 2;
+        const bottom = Math.min(lr.bottom, ft ? __ftR(ft).top - 10 : lr.bottom), mid = (lr.top + bottom) / 2;
         const r = li.getBoundingClientRect(), want = lab.scrollTop + (r.top - lr.top);
         const max = lab.scrollHeight - lab.clientHeight, target = Math.max(0, Math.min(max, want));
         lab.scrollTop += (target - lab.scrollTop) * .16;
@@ -3233,7 +3237,10 @@
     document.addEventListener('click', e => {
       if (!e.target.closest || !e.target.closest('#bookopen')) return;
       const sec = document.getElementById('redaction'); if (sec && document.body.classList.contains('wheel') && !sec.classList.contains('cur')) return;
-      e.preventDefault(); e.stopImmediatePropagation(); open();
+      e.preventDefault(); e.stopImmediatePropagation();
+      /* téléphone : pas de liseuse, le pdf s'ouvre directement */
+      if (matchMedia('(max-width: 760px), (hover: none) and (pointer: coarse)').matches) { window.open(PDF, '_blank', 'noopener'); return; }
+      open();
     }, true);
     /* pdf : lien simple sur le vrai site ; dans l'aperçu Claude, passage par l'enregistrement proposé au visiteur */
     const dl = m.querySelector('.mag-foot a');
@@ -3274,7 +3281,7 @@
     /* contact : dernière entrée du menu, elle tire le store du bas de page */
     const who = document.querySelector('footer .who');
     const li = document.createElement('li'), ca = document.createElement('a');
-    ca.href = '#contact'; ca.textContent = 'contact'; ca.className = 'm-contact'; li.appendChild(ca); list.appendChild(li);
+    ca.href = '#contact'; ca.textContent = 'contact'; ca.className = 'm-contact'; li.appendChild(ca); list.appendChild(li); li.hidden = true; /* plus de « contact » dans le menu : il est dans le footer */
     const li2 = document.createElement('li'), ia = document.createElement('a');
     ia.href = '#infos'; ia.textContent = 'infos'; ia.className = 'm-infos'; li2.appendChild(ia); list.insertBefore(li2, li);
     ia.addEventListener('click', e => {
@@ -3283,6 +3290,8 @@
       setTimeout(() => { if (window.showIntro) window.showIntro(); }, 450);
     });
     function openContact(focus) {
+      /* le contact vit désormais dans le tiroir du footer */
+      if (window.showIntro) { window.showIntro(); try { history.replaceState(null, '', '#contact'); } catch (_) {} return; }
       if (!who) return;
       who.classList.add('show');
       try { history.replaceState(null, '', '#contact'); } catch (_) {}
@@ -4532,8 +4541,8 @@ html body footer.has-tab .fglass, html body footer .fglass { clip-path: inset(ca
       const bin = atob(b64), u = new Uint8Array(bin.length); for (let i = 0; i < bin.length; i++) u[i] = bin.charCodeAt(i);
       return (LOOP[id] = URL.createObjectURL(new Blob([u], { type: 'video/mp4' }))); };
     const FILMS = [
-      { id: 'bandini', t: 'BANDINI', type: 'Clip · promotion de projet musical', roles: ['réalisation', 'direction artistique', 'motion design'] },
       { id: 'amity', t: 'AMITY', type: 'Film de marque · vêtements', roles: ['réalisation', 'cadrage', 'montage'] },
+      { id: 'bandini', t: 'BANDINI', type: 'Clip · promotion de projet musical', roles: ['réalisation', 'direction artistique', 'motion design'] },
       { id: 'allela', t: 'ALLELA', type: 'Vidéo de promotion · collectif de freelances', note: 'Pour les réseaux sociaux', roles: ['réalisation', 'cadrage', 'montage', 'FX', 'motion design'] },
       { id: 'newton', t: 'NEWTON-MÈTRES', type: 'Vidéo pédagogique · vélo électrique (Neold)', roles: ['réalisation', 'cadrage', 'conception-rédaction', 'direction artistique', 'motion design'] },
       { id: 'intervous', t: 'INTERVOUS', type: 'Micro-trottoir · concept de média', roles: ['montage', 'animation du micro-trottoir', 'motion design', 'direction artistique', 'conception-rédaction'] },
@@ -4715,7 +4724,7 @@ html body footer.has-tab .fglass, html body footer .fglass { clip-path: inset(ca
     const ft = document.querySelector('footer'), sec = document.getElementById('video'); if (!ft || !sec) return;
     let frozen = null;
     const freeze = () => { const h = parseFloat(getComputedStyle(ft).getPropertyValue('--hide')) || 0; frozen = h; ft.style.setProperty('transform', 'translateY(' + h + 'px)', 'important'); ft.style.setProperty('transition', 'none', 'important'); };
-    const sync = () => { const r = ft.getBoundingClientRect(), t = parseFloat(ft.style.getPropertyValue('--tabT')) || 0, line = r.top + t;
+    const sync = () => { const r = ft.getBoundingClientRect(), t = parseFloat(ft.style.getPropertyValue('--tabT')) || 0, line = r.top + t - (window.__fdCur || 0);
       sec.style.removeProperty('height'); const sr = sec.getBoundingClientRect(); if (!r.height || !sr.height) return;
       sec.style.setProperty('height', (sr.height + line - sr.bottom).toFixed(1) + 'px', 'important'); };
     setTimeout(() => { freeze(); sync(); }, 900);
@@ -4805,7 +4814,7 @@ html body footer.has-tab .fglass, html body footer .fglass { clip-path: inset(ca
       was = on; };
     new MutationObserver(m => { if (m.some(r => r.attributeName === 'class')) chk(); }).observe(sec, { attributes: true, attributeFilter: ['class'] }); chk();
     /* la section descend jusqu'au trait du footer, comme la vidéo */
-    function sync() { if (!ft) return; const r = ft.getBoundingClientRect(), tt = parseFloat(ft.style.getPropertyValue('--tabT')) || 0, line = r.top + tt;
+    function sync() { if (!ft) return; const r = __ftR(ft), tt = parseFloat(ft.style.getPropertyValue('--tabT')) || 0, line = r.top + tt;
       sec.style.removeProperty('height'); const sr = sec.getBoundingClientRect(); if (!r.height || !sr.height) return;
       sec.style.setProperty('height', (sr.height + line - sr.bottom).toFixed(1) + 'px', 'important'); }
     addEventListener('resize', () => { if (sec.classList.contains('cur')) setTimeout(sync, 60); });
@@ -4817,11 +4826,10 @@ html body footer.has-tab .fglass, html body footer .fglass { clip-path: inset(ca
     const sec = document.getElementById('photo'), stack = sec && sec.querySelector('.t-stack'); if (!sec || !stack || !window.__vf) return;
     const aff = document.querySelector('#plaff img');
     const L = [
+      { k: 'gal', t: 'PHOTOS', kind: '', roles: '', go: '<span class="cr-mh">voir la </span>galerie' },
       { k: 'series', id: 'jambes', t: 'MINI-SÉRIE<br>ANIMÉE', kind: 'Série', roles: 'écriture, direction artistique, collage, animation, montage, son', lab: 'épisode', eps: [
         { id: 'jambes', t: 'Avoir des jambes', type: 'Mini-série animée · épisode 1 · Avoir des jambes' },
-        { id: 'oeil', t: 'Mon œil', type: 'Mini-série animée · épisode 2 · Mon œil' },
-        { id: 'encore', t: 'Encore un peu de temps', type: 'Mini-série animée · épisode 3 · Encore un peu de temps' } ] },
-      { k: 'gal', t: 'PHOTOS', kind: '', roles: '', go: '<span class="cr-mh">voir la </span>galerie' },
+        { id: 'oeil', t: 'Mon œil', type: 'Mini-série animée · épisode 2 · Mon œil' } ] },
       { k: 'place', id: 'laplace', t: 'COURT<br>MÉTRAGE', kind: 'La Place · 2<sup>e</sup> place au concours Kino Session', roles: 'scénario, réalisation, production, montage, casting, musique', type: 'Teaser · court métrage La Place', go: '▶ voir le film', href: 'https://www.youtube.com/watch?v=uNDLnMvmRxs&t=30s' },
       { k: 'deso', id: 'deso', t: 'PROJET<br>MUSICAL', kind: 'Deso pour le mix · EP vol.1', roles: 'ingé son, prod, paroles, interprétation, enregistrement, clips, DA', go: 'mondepremium.com', href: 'https://mondepremium.com' },
       { k: 'series', id: 'meilleur', t: 'VIDÉOS<br>EXPLICATIVES', kind: 'Série', roles: 'écriture, face caméra', eps: [
@@ -4860,7 +4868,7 @@ html body footer.has-tab .fglass, html body footer .fglass { clip-path: inset(ca
     const io = new IntersectionObserver(es => es.forEach(en => { const v = en.target; if (sec.classList.contains('cur') && en.isIntersecting && en.intersectionRatio > .5) v.play().catch(() => {}); else v.pause(); }), { threshold: [0, .5, 1] });
     vids.forEach(v => io.observe(v));
     const ft = document.querySelector('footer');
-    function sync() { if (!ft) return; const r = ft.getBoundingClientRect(), tt = parseFloat(ft.style.getPropertyValue('--tabT')) || 0, line = r.top + tt;
+    function sync() { if (!ft) return; const r = __ftR(ft), tt = parseFloat(ft.style.getPropertyValue('--tabT')) || 0, line = r.top + tt;
       sec.style.removeProperty('height'); const sr = sec.getBoundingClientRect(); if (!r.height || !sr.height) return;
       sec.style.setProperty('height', (sr.height + line - sr.bottom).toFixed(1) + 'px', 'important'); }
     let t = 0, was = null;
@@ -4894,7 +4902,7 @@ html body footer.has-tab .fglass, html body footer .fglass { clip-path: inset(ca
   (function () {
     const sec = document.getElementById('laboratoire'), lab = sec && sec.querySelector('.lab'), ft = document.querySelector('footer'); if (!lab || !ft) return;
     function sync() { if (!document.body.classList.contains('wheel')) return;
-      const r = ft.getBoundingClientRect(), tt = parseFloat(ft.style.getPropertyValue('--tabT')) || 0, line = r.top + tt;
+      const r = __ftR(ft), tt = parseFloat(ft.style.getPropertyValue('--tabT')) || 0, line = r.top + tt;
       const band = sec.offsetParent; if (!r.height || !band) return; const top = band.getBoundingClientRect().top + sec.offsetTop;
       sec.style.setProperty('height', Math.max(200, line - top).toFixed(1) + 'px', 'important'); }
     let rt = 0, was = sec.classList.contains('cur');
@@ -4903,7 +4911,7 @@ html body footer.has-tab .fglass, html body footer .fglass { clip-path: inset(ca
       sync(); }).observe(sec, { attributes: true, attributeFilter: ['class'] });
     if (was) sec.setAttribute('data-ready', '');
     /* fiche ouverte : son contenu défile jusqu'au trait du footer, sans fondu */
-    const fitIn = () => { const r = ft.getBoundingClientRect(), line = r.top + (parseFloat(ft.style.getPropertyValue('--tabT')) || 0);
+    const fitIn = () => { const r = __ftR(ft), line = r.top + (parseFloat(ft.style.getPropertyValue('--tabT')) || 0);
       void line; };
     sec.querySelectorAll('.lp').forEach(li => new MutationObserver(() => { setTimeout(fitIn, 60); setTimeout(fitIn, 700); }).observe(li, { attributes: true, attributeFilter: ['class'] }));
     addEventListener('resize', () => setTimeout(fitIn, 120));
@@ -4956,32 +4964,272 @@ html body footer.has-tab .fglass, html body footer .fglass { clip-path: inset(ca
   })();
 </script>
 
+<style id="fdrawer-css">
+/* bienvenue : un tiroir qui sort du footer (remplace la pop-up) */
+footer .fd-wrap { position: absolute; left: 0; right: 0; bottom: calc(100% - var(--tabT, 30px)); text-align: left; overflow: hidden; pointer-events: none; z-index: 1; }
+footer .fd-panel { position: relative; transform: translateY(101%); transition: transform 1.05s cubic-bezier(.65,.05,.25,1); background: var(--bg); border-top: 1px solid var(--ink);
+  box-shadow: 0 -18px 40px -22px rgba(0,0,0,.35); display: grid; grid-template-columns: 230px minmax(0, 1fr); grid-template-rows: 1fr auto auto 1fr; gap: 0 clamp(24px, 4vw, 56px);
+  padding: 26px clamp(24px, 6vw, 80px) 24px; max-height: min(46vh, 360px); }
+footer .fd-wrap.open { pointer-events: auto; }
+footer .fd-wrap.open .fd-panel { transform: translateY(0); }
+footer .fd-ph { height: min(calc(46vh - 50px), 310px); background: #E9E6DF url(img/5ac36dd48ac0.jpg) center 80% / auto 115% no-repeat; border: 1px solid var(--ink); }
+footer .fd-tx { display: flex; flex-direction: column; justify-content: center; align-items: flex-start; text-align: left; min-width: 0; padding-right: 40px; opacity: 0; transform: translateY(14px); transition: opacity .6s ease .45s, transform .8s cubic-bezier(.2,.8,.2,1) .4s; }
+footer .fd-wrap.open .fd-tx { opacity: 1; transform: none; }
+footer .fd-wrap :is(p, h2, li, button) { font-style: normal !important; }
+footer .fd-hi { margin: 0 0 12px; font: 500 10.5px/1 var(--mono) !important; letter-spacing: .16em; color: var(--muted); }
+footer .fd-fn { margin: 0 0 6px; font: 500 15px/1 var(--mono) !important; letter-spacing: .42em; color: var(--ink); }
+footer .fd-ln { margin: 0; font: 900 34px/.9 var(--disp) !important; font-stretch: 75%; letter-spacing: -.01em; color: var(--ink); text-transform: uppercase; }
+footer .fd-pos { margin: 16px 0 14px; font: 400 12.5px/1.55 var(--mono) !important; text-transform: none !important; letter-spacing: 0 !important; color: var(--ink); max-width: 560px; }
+footer .fd-sk { list-style: none; margin: 0 0 18px; padding: 0; display: flex; flex-wrap: wrap; gap: 6px; max-width: 640px; }
+footer .fd-sk li { border: 1px dashed #A9A49B; padding: 7px 11px; font: 500 12px/1 var(--mono) !important; letter-spacing: .05em; color: #45423D; }
+footer .fd-go { align-self: flex-start; display: inline-flex; gap: 10px; align-items: center; background: var(--ink); color: var(--bg); border: 1px solid var(--ink); padding: 11px 18px; font: 500 11px/1 var(--mono) !important; letter-spacing: .08em; cursor: pointer; }
+footer .fd-go:hover { background: var(--bg); color: var(--ink); }
+footer .fd-x { position: absolute; top: 14px; right: clamp(16px, 3vw, 40px); width: 34px; height: 34px; padding: 0; border: 0; background: none; cursor: pointer; z-index: 2; }
+footer .fd-x::before, footer .fd-x::after { content: ""; position: absolute; left: 7px; right: 7px; top: 50%; height: 1.5px; background: var(--ink); }
+footer .fd-x::before { transform: rotate(45deg); } footer .fd-x::after { transform: rotate(-45deg); }
+footer .fd-x:hover { opacity: .55; }
+/* languette pour rouvrir, posée sur le bord du footer */
+footer .fd-tab { position: absolute; left: 50%; bottom: calc(100% - var(--tabT, 30px)); transform: translate(-50%, 0); z-index: 2; display: inline-flex; align-items: center; gap: 8px; padding: 7px 14px 6px; background: var(--bg); color: var(--ink);
+  border: 1px solid var(--ink); border-bottom: 0; font: 500 10px/1 var(--mono) !important; letter-spacing: .14em; cursor: pointer; transition: transform .5s cubic-bezier(.2,.8,.2,1), opacity .4s; }
+footer .fd-tab span { display: inline-block; transition: transform .3s; }
+footer .fd-tab:hover span { transform: translateY(-2px); }
+footer.fd-on .fd-tab { opacity: 0; transform: translate(-50%, 100%); pointer-events: none; }
+@media (max-width: 760px) {
+  footer .fd-panel { grid-template-columns: 104px minmax(0, 1fr); gap: 0 16px; padding: 18px 16px 16px; max-height: calc(100svh - var(--fh, 100px) - 150px); overflow-y: auto; }
+  footer .fd-ph { height: 150px; align-self: start; }
+  footer .fd-tx { padding-right: 0; justify-content: flex-start; }
+  footer .fd-hi { font-size: 9.5px !important; margin-bottom: 9px; }
+  footer .fd-fn { font-size: 12px !important; } footer .fd-ln { font-size: 25px !important; }
+  footer .fd-pos { font-size: 11.5px !important; margin: 10px 0 10px; }
+  footer .fd-sk { gap: 5px; margin-bottom: 14px; grid-column: 1 / -1; } footer .fd-sk li { font-size: 10.5px !important; padding: 6px 9px; }
+  footer .fd-x { top: 6px; right: 6px; }
+  footer .fd-tab { font-size: 9px !important; padding: 6px 12px 5px; }
+}
+@media (prefers-reduced-motion: reduce) { footer .fd-panel, footer .fd-tx { transition: none; } }
+footer .fd-ph { grid-column: 1; grid-row: 1 / 5; }
+footer .fd-tx { grid-column: 2; grid-row: 1 / 3; justify-content: flex-end !important; }
+footer .fd-sk { grid-column: 2; grid-row: 3; }
+footer .fd-cta .fd-go { grid-column: auto; grid-row: auto; }
+@media (max-width: 760px) { html body footer .fd-cta { grid-column: 1 / -1 !important; grid-row: 3 !important; } footer .fd-cta .fd-go { width: 100%; justify-content: center; } footer .fd-cta .fd-in { margin: 12px 18px 0 0 !important; } }
+footer .fd-sk, footer .fd-cta { opacity: 0; transform: translateY(14px); transition: opacity .6s ease .55s, transform .8s cubic-bezier(.2,.8,.2,1) .5s, background-color .2s, color .2s; }
+footer .fd-wrap.open :is(.fd-sk, .fd-cta) { opacity: 1; transform: none; }
+html body:has(footer .fd-wrap:focus-within) .wrap > main, html body:has(footer .fd-arrow:focus) .wrap > main, html body:has(footer .fd-peek:hover) .wrap > main { filter: none !important; }
+/* tiroir ouvert : le site reste visible, légèrement flouté */
+html body .wrap > main { transition: filter .9s ease; }
+/* flou du fond : un voile (backdrop-filter) plutôt qu'un filtre sur le site, pour que les vidéos soient floutées aussi sur iPhone */
+.fd-veil { position: fixed; inset: 0; z-index: 29; pointer-events: none; opacity: 0; transition: opacity .9s ease; background: rgba(236,233,226,.42); -webkit-backdrop-filter: blur(9px) saturate(.8); backdrop-filter: blur(9px) saturate(.8); }
+body:has(footer.fd-on) .fd-veil { opacity: 1; pointer-events: auto; }
+
+footer .fd-tab { display: none !important; }
+/* footer fermé : plus de liste de compétences ni d'Instagram ; un aperçu des étiquettes et une flèche à tirer */
+html body footer .who > :not(.fd-peek), html body footer .who br { display: none !important; }
+html body footer .who { cursor: pointer; }
+html body footer a.insta:not(.fd-in) { display: none !important; }
+footer .fd-peek { justify-self: start; align-self: center; list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 6px; max-width: min(46vw, 600px); max-height: 64px; overflow: hidden; cursor: pointer; }
+footer .fd-peek li { border: 1px dashed #A9A49B; padding: 7px 11px; font: 500 12px/1 var(--mono) !important; letter-spacing: .05em; color: #45423D; white-space: nowrap; transition: filter .4s, opacity .4s; }
+footer .fd-peek li.r2 { filter: blur(1.6px); opacity: .45; }
+footer .fd-peek li.r2.f2 { filter: blur(2.4px); opacity: .3; }
+footer .fd-peek li.r2.f3 { filter: blur(3.2px); opacity: .18; }
+footer .fd-peek li.r3 { visibility: hidden; }
+@media (max-width: 360px) { html body footer .contact .mail { font-size: 10.5px !important; letter-spacing: 0 !important; } html body footer .fd-peek li { font-size: 9.5px !important; padding: 5px 7px !important; } }
+/* footer fermé : une seule étiquette résumante */
+html body footer .fd-peek { max-height: none !important; overflow: visible !important; }
+html body footer .fd-peek li:only-child { border: 0 !important; padding: 0 !important; white-space: normal; line-height: 1.35 !important; filter: none !important; opacity: 1 !important; visibility: visible !important; }
+html body footer .fd-peek li:only-child i { font-style: normal; white-space: nowrap; }
+@media (max-width: 760px) { html body footer .fd-peek li:only-child .p { display: inline-block; white-space: nowrap; } }
+@media (max-width: 360px) { html body footer .fd-peek li:only-child .p { display: inline; white-space: normal; } }
+/* texte centré verticalement sur la hauteur de la photo */
+@media (min-width: 761px) { html body footer .fd-panel { grid-template-rows: 1fr auto auto auto 1fr; } html body footer .fd-ph { grid-row: 1 / 6; } html body footer .fd-tx { grid-row: 2; justify-content: flex-start !important; } html body footer .fd-sk { grid-row: 3; } html body footer .fd-cta { grid-row: 4; } }
+@media (max-width: 760px) { html body footer .fd-tx { justify-content: center !important; align-self: stretch; } }
+/* bloc photo + texte remonté, décollé des étiquettes */
+html body footer .fd-wrap .fd-panel { padding-top: 0 !important; }
+@media (max-width: 760px) { html body footer .fd-ph, html body footer .fd-tx { margin-top: -20px; } html body footer .fd-sk { margin-top: 26px !important; justify-content: center; } }
+html body footer .fd-wrap .fd-ph { transition: opacity 1s cubic-bezier(.4,0,.2,1) !important; }
+html body footer .fd-ph { border: 0 !important; background-color: transparent !important;
+  -webkit-mask-image: linear-gradient(to right, transparent, #000 18%, #000 82%, transparent), linear-gradient(to bottom, transparent, #000 14%, #000 84%, transparent);
+  -webkit-mask-composite: source-in; mask-image: linear-gradient(to right, transparent, #000 18%, #000 82%, transparent), linear-gradient(to bottom, transparent, #000 14%, #000 84%, transparent); mask-composite: intersect; } html body footer .fd-wrap:not(.open) .fd-ph { opacity: 0; }
+@media (min-width: 761px) { html body footer .fd-ph { margin-top: -14px; } html body footer .fd-tx { margin-bottom: 12px; } }
+footer .fd-arrow { position: absolute; left: var(--fdAx, 50%); top: calc(var(--tabT, 30px) + (100% - var(--tabT, 30px)) / 2); transform: translate(-50%, -50%); z-index: 3; width: 44px; height: 44px; padding: 0; border: 0; background: none; color: var(--ink); cursor: grab; touch-action: none; display: grid; place-items: center; }
+footer .fd-arrow svg { width: 22px; height: 22px; transition: transform .6s cubic-bezier(.2,.8,.2,1); animation: fd-bob 2.2s ease-in-out infinite; }
+footer.fd-on .fd-arrow svg { transform: rotate(180deg); animation: none; }
+footer .fd-arrow:active { cursor: grabbing; }
+/* première fermeture : le tiroir se soulève deux fois pour montrer qu'on peut le tirer de nouveau */
+footer .fd-wrap.fd-hint .fd-panel { animation: fd-tease 2.6s cubic-bezier(.45,.05,.3,1) both; }
+@keyframes fd-tease { 0% { transform: translateY(101%); } 24% { transform: translateY(calc(100% - 64px)); } 46% { transform: translateY(101%); } 66% { transform: translateY(calc(100% - 34px)); } 84%, 100% { transform: translateY(101%); } }
+footer.fd-hinting .fd-arrow svg { animation: fd-nudge 2.6s cubic-bezier(.45,.05,.3,1) both; }
+@keyframes fd-nudge { 0% { translate: 0 0; scale: 1; } 24% { translate: 0 -12px; scale: 1.25; } 46% { translate: 0 0; scale: 1; } 66% { translate: 0 -7px; scale: 1.12; } 84%, 100% { translate: 0 0; scale: 1; } }
+@keyframes fd-bob { 0%, 100% { translate: 0 2px; } 50% { translate: 0 -4px; } }
+footer .fd-in { display: inline-flex !important; align-items: center; gap: 8px; margin-left: 16px; color: var(--ink); font: 500 10.5px/1 var(--mono) !important; letter-spacing: .08em; text-decoration: none; position: static !important; transform: none !important; width: auto !important; height: auto !important; opacity: .8; }
+footer .fd-in svg { width: 18px; height: 18px; }
+html body footer .fd-wrap a.fd-in { font: 500 11px/1 var(--mono) !important; font-weight: 500 !important; }
+html body footer .fd-wrap a.fd-mail { text-transform: none !important; letter-spacing: .02em !important; }
+footer .fd-cta { grid-column: 2; grid-row: 4; display: flex; flex-wrap: wrap; align-items: center; gap: 10px 0; align-self: start; }
+footer .fd-in:hover { opacity: 1; text-decoration: underline; text-underline-offset: 3px; }
+@media (max-width: 760px) {
+  footer .fd-peek { max-width: calc(50vw - 46px); max-height: 56px; gap: 5px; } footer .fd-peek li { font-size: 10.5px !important; padding: 6px 9px; }
+  footer .fd-in { margin: 10px 0 0; grid-column: 1 / -1; }
+}
+@media (prefers-reduced-motion: reduce) { footer .fd-arrow svg { animation: none; } }
+@media (max-width: 760px) {
+  footer .fd-panel { grid-template-columns: 96px minmax(0, 1fr); grid-template-rows: auto auto auto; gap: 0 14px; }
+  footer .fd-ph { grid-row: 1; height: 128px; }
+  footer .fd-tx { grid-row: 1; justify-content: flex-start !important; padding-right: 30px; }
+  footer .fd-sk { grid-column: 1 / -1; grid-row: 2; margin: 12px 0 12px; }
+  footer .fd-go { grid-column: 1 / -1; grid-row: 3; width: 100%; justify-content: center; }
+  footer .fd-pos { margin-bottom: 0 !important; }
+}
+
+/* le reste du footer a ses animations coupées : on les rend au tiroir et à la flèche */
+html body footer .fd-wrap .fd-panel { transition: transform 1.05s cubic-bezier(.65,.05,.25,1) !important; }
+html body footer .fd-wrap .fd-tx { transition: opacity .6s ease .45s, transform .8s cubic-bezier(.2,.8,.2,1) .4s !important; }
+html body footer .fd-wrap :is(.fd-sk, .fd-cta) { transition: opacity .6s ease .55s, transform .8s cubic-bezier(.2,.8,.2,1) .5s !important; }
+html body footer .fd-wrap .fd-go, html body footer .fd-wrap .fd-in { transition: background-color .2s, color .2s, opacity .2s !important; }
+html body footer .fd-peek li { transition: filter .4s, opacity .4s !important; }
+html body footer .fd-arrow svg { transition: transform .6s cubic-bezier(.2,.8,.2,1) !important; animation: fd-bob 2.2s ease-in-out infinite !important; }
+html body footer.fd-on .fd-arrow svg { animation: none !important; }
+html body footer .fd-wrap.fd-hint .fd-panel { animation: fd-tease 2.6s cubic-bezier(.45,.05,.3,1) both !important; }
+html body footer .fd-wrap.fd-hint .fd-x { opacity: 0 !important; }
+html body footer.fd-hinting .fd-arrow svg { animation: fd-nudge 2.6s cubic-bezier(.45,.05,.3,1) both !important; }
+@media (prefers-reduced-motion: reduce) { html body footer .fd-wrap .fd-panel, html body footer .fd-wrap .fd-tx { transition: none !important; } html body footer .fd-arrow svg { animation: none !important; } }
+
+/* v2 : le footer est le haut du tiroir ; tout monte d'un bloc, le contenu est rangé sous la barre */
+html body footer .fd-wrap { top: 100% !important; bottom: auto !important; overflow: visible !important; }
+html body footer .fd-wrap .fd-panel { transform: none !important; transition: none !important; animation: none !important; border-top: 0 !important; box-shadow: none !important; padding-top: 10px !important; }
+html body footer .fd-wrap .fd-x { top: 4px !important; }
+html body footer .fd-peek { transition: opacity .5s ease, filter .5s ease !important; }
+html body footer.fd-on .fd-peek { opacity: 0 !important; filter: blur(4px); pointer-events: none; }
+html body footer.fd-hinting .fd-wrap .fd-x { opacity: 0 !important; }
+@media (max-width: 760px) { html body footer .fd-wrap .fd-panel { max-height: none !important; overflow: visible !important; } }
+html body footer.fd-now .fd-wrap :is(.fd-tx, .fd-sk, .fd-cta), html body:has(footer.fd-now) .wrap > main { transition: none !important; }
+
+/* déplié : pas de bouton, pas d'e-mail dans la barre ; la croix va dans l'angle haut droit */
+html body footer .fd-wrap .fd-go { display: none !important; }
+html body footer .fd-wrap .fd-cta a.fd-mail { margin-left: 0 !important; }
+html body footer .contact { transition: opacity .4s ease !important; }
+html body footer.fd-on .contact { opacity: 0 !important; pointer-events: none !important; }
+html body footer > .fd-x { position: absolute !important; top: calc(var(--tabT, 30px) + 8px) !important; right: clamp(14px, 3vw, 36px) !important; z-index: 4; opacity: 0; pointer-events: none; transition: opacity .4s ease !important; }
+html body footer.fd-on > .fd-x { opacity: 1; pointer-events: auto; }
+html body footer.fd-hinting > .fd-x { opacity: 0 !important; }
+
+/* la flèche devient la croix quand le footer est tiré */
+html body footer > .fd-x { display: none !important; }
+html body footer .fd-arrow svg { grid-area: 1 / 1; }
+html body footer .fd-arrow .fd-xx { opacity: 0; transform: rotate(-90deg) scale(.5) !important; animation: none !important; transition: opacity .45s ease, transform .7s cubic-bezier(.2,.8,.2,1) !important; }
+html body footer .fd-arrow .fd-ar { transition: opacity .45s ease, transform .7s cubic-bezier(.2,.8,.2,1) !important; }
+html body footer.fd-on .fd-arrow .fd-ar { opacity: 0; transform: rotate(90deg) scale(.5) !important; }
+html body footer.fd-on .fd-arrow .fd-xx { opacity: 1; transform: none !important; }
+
+/* de l'air sous l'e-mail (et la barre du bas de l'iPhone) */
+html body footer .fd-wrap .fd-panel { padding-bottom: calc(34px + env(safe-area-inset-bottom, 0px)) !important; }
+@media (max-width: 760px) { html body footer .fd-wrap .fd-panel { padding-bottom: calc(30px + env(safe-area-inset-bottom, 0px)) !important; } }
+
+
+html body footer.fd-reveal { transition: opacity .7s ease !important; }
+body:has(footer.fd-now) .fd-veil { transition: none !important; }
+body:has(footer.fd-reveal) .fd-veil { transition: opacity .7s ease !important; }
+html body footer.fd-now :is(.fd-peek, .contact, .fd-arrow svg, .fd-arrow .fd-ar, .fd-arrow .fd-xx) { transition: none !important; }
+</style>
 <script>
-  /* pop-up d'accueil : photo à gauche, texte à droite (jamais sur la photo), une fois par visite ; « infos » la rouvre */
+  /* bienvenue dans le footer : il se déroule à l'arrivée (une fois par visite), se ferme à la croix, se rouvre par la languette ; « infos » le rouvre aussi */
   (function () {
-    const SK = ['vidéo', 'photo', 'motion / design', 'conception-rédaction', 'communication digitale', 'community management', 'création et gestion de sites web', 'création sonore', 'mixage'];
-    const P = document.createElement('div'); P.className = 'fdc-pop'; P.hidden = true; P.setAttribute('role', 'dialog'); P.setAttribute('aria-modal', 'true'); P.setAttribute('aria-label', 'François Da Camara');
-    P.innerHTML = '<div class="fdc-card"><div class="fdc-ph fdc-vid"><video muted loop playsinline preload="auto" src="films/bienvenue.mp4"></video><button class="fdc-snd" type="button" aria-label="Activer le son"><span class="fdc-snd-ic" aria-hidden="true"></span><span class="fdc-snd-t">avec le son</span></button></div>' +
-      '<button class="fdc-x" type="button" aria-label="Fermer"></button><div class="fdc-tx"><p class="fdc-hi">Bienvenue chez moi</p><div class="fdc-id"><span class="fdc-eye" aria-hidden="true"></span><div><p class="fdc-fn">FRANÇOIS</p><h2 class="fdc-ln">DA CAMARA</h2></div></div>' +
-      '<p class="fdc-pos">Communicant 360°, spécialisé dans la création numérique et l’audiovisuel.</p>' +
-      '<ul class="fdc-sk">' + SK.map(s => '<li>' + s + '</li>').join('') + '</ul>' +
-      '<button class="fdc-go" type="button">voir le site <span aria-hidden="true">→</span></button></div></div>';
-    const FV = P.querySelector('.fdc-vid video'), SB = P.querySelector('.fdc-snd');
-    FV.addEventListener('playing', () => FV.classList.add('go'));
-    SB.addEventListener('click', e => { e.stopPropagation();
-      if (FV.muted) { FV.muted = false; FV.currentTime = 0; FV.play().catch(() => {}); SB.classList.add('on'); SB.querySelector('.fdc-snd-t').textContent = 'couper le son'; SB.setAttribute('aria-label', 'Couper le son'); }
-      else { FV.muted = true; SB.classList.remove('on'); SB.querySelector('.fdc-snd-t').textContent = 'avec le son'; SB.setAttribute('aria-label', 'Activer le son'); } });
-    document.body.appendChild(P);
-    const close = () => { const v = P.querySelector('.fdc-vid video'); if (v) { v.pause(); v.muted = true; const b = P.querySelector('.fdc-snd'); if (b) { b.classList.remove('on'); b.querySelector('.fdc-snd-t').textContent = 'avec le son'; } } P.classList.remove('in'); setTimeout(() => { P.hidden = true; }, 250); document.body.classList.remove('fdc-on'); };
-    const open = () => { const v = P.querySelector('.fdc-vid video'); if (v) { v.play().catch(() => {}); } P.hidden = false; document.body.classList.add('fdc-on'); requestAnimationFrame(() => P.classList.add('in')); };
-    P.querySelector('.fdc-go').addEventListener('click', close);
-    P.querySelector('.fdc-x').addEventListener('click', close);
-    const mk = document.querySelector('footer .mark'), mv = mk && (mk.style.getPropertyValue('--mark') || getComputedStyle(mk).getPropertyValue('--mark')); if (mv) P.querySelector('.fdc-eye').style.setProperty('--mark', mv);
-    P.addEventListener('click', e => { if (e.target === P) close(); });
-    addEventListener('keydown', e => { if (!P.hidden && e.key === 'Escape') { e.stopImmediatePropagation(); close(); } }, true);
+    const f = document.querySelector('footer'); if (!f) return;
+    const SK = ['vidéo', 'photo', 'motion / design', 'DA', 'conception-rédaction', 'community management', 'sites web', 'sound design', 'orga / coordination'];
+    const w = document.createElement('div'); w.className = 'fd-wrap'; w.setAttribute('role', 'region'); w.setAttribute('aria-label', 'Bienvenue');
+    w.innerHTML = '<div class="fd-panel"><button class="fd-x" type="button" aria-label="Fermer"></button>' +
+      '<div class="fd-ph" role="img" aria-label="François Da Camara, souffleur à la main"></div>' +
+      '<div class="fd-tx"><p class="fd-fn">FRANÇOIS</p><h2 class="fd-ln">DA CAMARA</h2>' +
+      '<p class="fd-pos">Communicant spécialisé dans la création numérique / audiovisuelle.</p></div>' +
+      '<ul class="fd-sk">' + SK.map(x => '<li>' + x + '</li>').join('') + '</ul>' +
+      '<button class="fd-go" type="button">voir le site&nbsp;&nbsp;→</button></div>';
+    const ig = f.querySelector('a.insta');
+    if (ig) { const a = document.createElement('a'); a.className = 'fd-in fd-ig'; a.href = ig.href; a.target = '_blank'; a.rel = 'noopener'; a.innerHTML = ig.innerHTML + '<span>instagram</span>'; w.querySelector('.fd-go').after(a); }
+    { const m = document.createElement('a'); m.className = 'fd-in fd-mail'; m.href = 'mailto:dacamara.fr@gmail.com'; m.textContent = 'dacamara.fr@gmail.com'; w.querySelector('.fd-go').after(m); }
+    { const go = w.querySelector('.fd-go'), cta = document.createElement('div'); cta.className = 'fd-cta'; go.before(cta); cta.append(go, ...w.querySelectorAll('.fd-panel > .fd-in')); }
+    const peek = document.createElement('ul'); peek.className = 'fd-peek'; peek.setAttribute('aria-hidden', 'true'); peek.innerHTML = '<li><span class="p"><i>J’écris,</i> <i>je filme,</i></span> <span class="p"><i>je monte,</i> <i>je mixe…</i></span></li>';
+    const who = f.querySelector('.who'); if (who) who.appendChild(peek); else f.prepend(peek);
+    const rows = () => { const li = [...peek.children]; li.forEach(x => x.className = ''); if (!li.length) return; const t0 = li[0].offsetTop; let t1 = null, k = 0;
+      li.forEach(x => { if (x.offsetTop === t0) return; if (t1 === null) t1 = x.offsetTop; if (x.offsetTop === t1) { k++; x.className = 'r2' + (k > 3 ? ' f3' : k > 1 ? ' f2' : ''); } else x.className = 'r3'; }); };
+    /* flèche (et croix) : à mi-chemin entre la fin des étiquettes et le début du mail, calculé footer fermé puis gardé */
+    const place = () => { const li = [...peek.children].filter(x => !x.className), ml = f.querySelector('.contact .mail') || f.querySelector('.contact');
+      if (!li.length || !ml || !peek.offsetParent) return;
+      const fl = f.getBoundingClientRect().left, rt = Math.max(...li.map(x => { const g = document.createRange(); g.selectNodeContents(x); return Math.max(...[...g.getClientRects()].map(q => q.right)); })), lt = ml.getBoundingClientRect().left;
+      if (lt > rt) f.style.setProperty('--fdAx', Math.round((rt + lt) / 2 - fl) + 'px'); };
+    const rp = () => { rows(); place(); };
+    requestAnimationFrame(rp); addEventListener('resize', rp); if (document.fonts) document.fonts.ready.then(rp); setTimeout(rp, 800);
+    const arrow = document.createElement('button'); arrow.className = 'fd-arrow'; arrow.type = 'button'; arrow.setAttribute('aria-label', 'Ouvrir la présentation');
+    arrow.innerHTML = '<svg class="fd-ar" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" aria-hidden="true"><path d="M12 20V4M5 11l7-7 7 7"/></svg><svg class="fd-xx" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" aria-hidden="true"><path d="M5 5l14 14M19 5L5 19"/></svg>';
+    f.appendChild(arrow);
+    const tab = document.createElement('button'); tab.className = 'fd-tab'; tab.type = 'button'; tab.innerHTML = 'bienvenue <span aria-hidden="true">↑</span>'; tab.setAttribute('aria-label', 'Ouvrir la présentation');
+    f.appendChild(w); f.appendChild(tab);
+    const setH = () => f.style.setProperty('--fh', f.getBoundingClientRect().height + 'px'); setH(); addEventListener('resize', setH);
+    let hinted = false, B = null, cur = 0, raf = 0;
+    let lastT = '', B0 = 0;
+    const base = () => { if (lastT && f.style.transform === lastT) return B0; const m = /translateY\((-?[\d.]+)px\)/.exec(f.style.transform || ''); return m ? parseFloat(m[1]) : (parseFloat(getComputedStyle(f).getPropertyValue('--hide')) || 0); };
+    const ease = t => (t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
+    /* le reste du site recale le footer (translateY) : on prend sa valeur comme nouvelle base et on garde notre décalage, sans saut */
+    let inPut = false; const sp0 = f.style.setProperty.bind(f.style);
+    f.style.setProperty = (k, v, pr) => { if (k === 'transform' && !inPut && cur) { const m = /translateY\((-?[\d.]+)px\)/.exec(v || ''); if (m) { B = parseFloat(m[1]); B0 = B; v = 'translateY(' + (B + cur).toFixed(1) + 'px)'; const r = sp0(k, v, pr); lastT = f.style.transform; return r; } } return sp0(k, v, pr); };
+    const put = () => { inPut = true; window.__fdCur = cur; B0 = B; f.style.setProperty('transform', 'translateY(' + (B + cur).toFixed(1) + 'px)', 'important'); lastT = f.style.transform; inPut = false; };
+    const tween = (to, dur) => new Promise(res => { cancelAnimationFrame(raf); if (B === null) B = base(); const from = cur, t0 = performance.now();
+      if (matchMedia('(prefers-reduced-motion: reduce)').matches) dur = 1;
+      const step = now => { const t = Math.min(1, (now - t0) / dur); cur = from + (to - from) * ease(t); put(); if (t < 1) raf = requestAnimationFrame(step); else { if (to === 0) B = null; res(); } };
+      raf = requestAnimationFrame(step); });
+    const P = () => { const ph = w.querySelector('.fd-panel').offsetHeight, bar = innerHeight - (f.getBoundingClientRect().top - (window.__fdCur || 0) + (parseFloat(getComputedStyle(f).getPropertyValue('--tabT')) || 30));
+      return Math.min(ph, innerHeight - bar - (innerWidth <= 760 ? 150 : 170)); };
+    const hint = () => { if (hinted || matchMedia('(prefers-reduced-motion: reduce)').matches) return; hinted = true;
+      setTimeout(async () => { if (w.classList.contains('open')) return; f.classList.add('fd-hinting');
+        await tween(-64, 650); if (w.classList.contains('open')) return; await tween(0, 520); if (w.classList.contains('open')) return;
+        await tween(-34, 460); if (w.classList.contains('open')) return; await tween(0, 480); f.classList.remove('fd-hinting'); }, 1100); };
+    const close = () => { const was = w.classList.contains('open'); w.classList.remove('open'); f.classList.remove('fd-on'); arrow && arrow.setAttribute('aria-label', 'Ouvrir la présentation'); if (w.contains(document.activeElement)) document.activeElement.blur();
+      if (was) tween(0, 1000); };
+    const open = () => { f.classList.remove('fd-hinting'); if (B === null) B = base(); w.classList.add('open'); f.classList.add('fd-on'); arrow && arrow.setAttribute('aria-label', 'Fermer la présentation'); tween(-P(), 1050); };
+    addEventListener('resize', () => setTimeout(() => { B = null; cur = 0; if (w.classList.contains('open')) { B = base(); cur = -P(); put(); } }, 120));
+    f.querySelector('.fd-x').addEventListener('click', e => { e.stopPropagation(); close(); });
+    w.querySelector('.fd-go').addEventListener('click', e => { e.stopPropagation(); close(); });
+    tab.addEventListener('click', e => { e.stopPropagation(); open(); });
+    const toggle = () => (w.classList.contains('open') ? close() : open());
+    peek.addEventListener('click', e => { e.stopPropagation(); open(); });
+    /* flèche : un clic ouvre ou ferme ; on peut aussi la tirer vers le haut (ou le tiroir vers le bas) */
+    let y0 = null, moved = false;
+    const down = e => { y0 = e.clientY; moved = false; };
+    const move = e => { if (y0 === null) return; const dy = e.clientY - y0;
+      if (dy < -28 && !w.classList.contains('open')) { moved = true; y0 = null; open(); }
+      else if (dy > 36 && w.classList.contains('open')) { moved = true; y0 = null; close(); } };
+    const up = () => { y0 = null; };
+    arrow.addEventListener('pointerdown', e => { e.stopPropagation(); arrow.setPointerCapture && arrow.setPointerCapture(e.pointerId); down(e); });
+    arrow.addEventListener('pointermove', move); arrow.addEventListener('pointerup', up); arrow.addEventListener('pointercancel', up);
+    arrow.addEventListener('click', e => { e.stopPropagation(); if (moved) { moved = false; return; } toggle(); });
+    w.querySelector('.fd-panel').addEventListener('pointerdown', e => { if (e.pointerType !== 'mouse' && !e.target.closest('a, button')) down(e); });
+    w.querySelector('.fd-panel').addEventListener('pointermove', move); w.querySelector('.fd-panel').addEventListener('pointerup', up);
+    addEventListener('keydown', e => { if (w.classList.contains('open') && e.key === 'Escape') close(); });
+    ['wheel', 'touchmove'].forEach(t => w.addEventListener(t, e => e.stopPropagation(), { passive: true }));
+    const veil = document.createElement('div'); veil.className = 'fd-veil'; veil.setAttribute('aria-hidden', 'true'); document.body.appendChild(veil);
+    veil.addEventListener('click', e => { e.stopPropagation(); close(); });
+    veil.addEventListener('wheel', e => e.preventDefault(), { passive: false });
+    f.appendChild(w.querySelector('.fd-x'));
     window.showIntro = open;
     let seen = false; try { seen = sessionStorage.getItem('fdc-pop') === '1'; sessionStorage.setItem('fdc-pop', '1'); } catch (_) {}
-    if (!seen) { if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', open); else open(); }
+    if (seen) document.documentElement.classList.remove('fd-first');
+    if (!seen) {
+      /* arrivée : le tiroir est déjà ouvert, sans animation ; on le recale après le calage du footer par le reste du site */
+      const now = () => { cancelAnimationFrame(raf); w.classList.add('open'); f.classList.add('fd-on', 'fd-now'); arrow && arrow.setAttribute('aria-label', 'Fermer la présentation'); B = null; cur = 0; B = base(); cur = -P(); put(); };
+      /* le site recale le footer pendant ~1,5 s : on le retient en place à chaque image, pour qu'il soit là dès l'entrée sans sauter ;
+         le fond, qui s'installe en même temps, reste masqué par un voile plus dense qui s'éclaircit ensuite */
+      f.classList.add('fd-pre'); now(); const t0 = performance.now();
+      /* le fond papier reste tant que le site bouge encore (footer, sections, vidéo) ; on dévoile quand tout est stable depuis ~0,3 s */
+      const sig = () => { const v = document.getElementById('video'), vf = v && v.querySelector('.vfilm'), r = vf ? vf.getBoundingClientRect() : { top: 0, height: 0 };
+        return [Math.round(f.getBoundingClientRect().top), Math.round(P()), v ? Math.round(v.offsetHeight) : 0, Math.round(r.top / 4), Math.round(r.height / 4)].join(','); };
+      let last = '', still = 0, shown = false, tShown = 0;
+      const reveal = () => { if (shown) return; shown = true; tShown = performance.now(); document.documentElement.classList.remove('fd-first'); };
+      const hold = () => { if (!w.classList.contains('open')) { reveal(); return f.classList.remove('fd-pre'); }
+        if (f.style.transform !== lastT || Math.abs(cur + P()) > .5) now();
+        const g = sig(), nw = performance.now(); if (g !== last) { still = nw; last = g; } still = still || nw;
+        const el = performance.now() - t0; if (!shown && ((nw - still > 280 && el > 250) || el > 2200)) reveal();
+        if (!shown || performance.now() - tShown < 600) requestAnimationFrame(hold); else { f.classList.remove('fd-pre'); setTimeout(() => f.classList.remove('fd-now'), 1200);
+          /* une seule invitation, très discrète : le footer se replie à peine puis revient */
+          if (!matchMedia('(prefers-reduced-motion: reduce)').matches) setTimeout(async () => { if (!w.classList.contains('open')) return; const o = cur; await tween(o + 14, 700); if (w.classList.contains('open')) tween(o, 900); }, 1100); } };
+      requestAnimationFrame(hold);
+    }
   })();
 </script>
 
@@ -5009,7 +5257,7 @@ html body #laboratoire .nm-grid { max-height: none !important; height: auto !imp
     const ids = ['video', 'laboratoire', 'redaction', 'photo'];
     function syncAll() {
       if (!document.body.classList.contains('wheel')) return;
-      const r = ft.getBoundingClientRect(); if (!r.height) return;
+      const r = __ftR(ft); if (!r.height) return;
       const line = r.top + (parseFloat(ft.style.getPropertyValue('--tabT')) || 0), top0 = band.getBoundingClientRect().top;
       ids.forEach(id => { const sec = document.getElementById(id); if (!sec) return;
         const h = Math.max(200, line - (top0 + sec.offsetTop));
