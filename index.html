@@ -5213,7 +5213,7 @@ html body footer.fd-now :is(.fd-peek, .contact, .fd-arrow svg, .fd-arrow .fd-ar,
     veil.addEventListener('wheel', e => e.preventDefault(), { passive: false });
     f.appendChild(w.querySelector('.fd-x'));
     window.showIntro = open;
-    let seen = window.__H0 === 'photos' || !!(window.__FP && window.__FP[window.__H0]); try { seen = seen || sessionStorage.getItem('fdc-pop') === '1'; sessionStorage.setItem('fdc-pop', '1'); } catch (_) {}
+    let seen = window.__H0 === 'photos' || window.__H0 === 'showreel' || !!(window.__FP && window.__FP[window.__H0]); try { seen = seen || sessionStorage.getItem('fdc-pop') === '1'; sessionStorage.setItem('fdc-pop', '1'); } catch (_) {}
     if (seen) document.documentElement.classList.remove('fd-first');
     if (!seen) {
       /* arrivée : le tiroir est déjà ouvert, sans animation ; on le recale après le calage du footer par le reste du site */
@@ -5329,6 +5329,9 @@ html body .xp-m, html body .vf-media { background-size: cover !important; backgr
 </style>
 <script>/* lien direct vers la galerie : dacamara.fr/#photos */
 if (window.__H0 === 'photos') { let n = 0; const t = setInterval(() => { const g = document.getElementById('opengal'), v = document.getElementById('galov'); if (!g || !v || ++n > 12) return clearInterval(t); if (n < 3) return; if (v.hidden) g.click(); else clearInterval(t); }, 400); }
+</script>
+<script>/* lien direct vers le showreel : dacamara.fr/#showreel */
+if (window.__H0 === 'showreel') setTimeout(() => { if (window.goToTab) window.goToTab('video'); const v = document.getElementById('video'); if (v) v.scrollTop = 0; setTimeout(() => { const b = document.getElementById('playbtn'); if (b) b.click(); }, 600); }, 1200);
 </script>
 </body>
 </html>
