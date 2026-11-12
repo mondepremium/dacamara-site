@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="description" content="Portfolio de François Da Camara, communicant 360° spécialisé dans la création numérique et l’audiovisuel : vidéo, motion design, conception-rédaction, photo.">
 <style>body{margin:0}[hidden]:not([hidden=until-found i]){display:none!important}</style>
-<script>try { if (sessionStorage.getItem('fdc-pop') !== '1') document.documentElement.classList.add('fd-first'); } catch (e) { document.documentElement.classList.add('fd-first'); }</script>
+<script>window.__H0 = location.hash.slice(1); try { if (sessionStorage.getItem('fdc-pop') !== '1') document.documentElement.classList.add('fd-first'); } catch (e) { document.documentElement.classList.add('fd-first'); }</script>
 <style>html.fd-first footer, html.fd-first .fd-veil { opacity: 0 !important; } html.fd-first body::after { content: ""; position: fixed; inset: 0; z-index: 28; background: #ECE9E2; pointer-events: none; }
 html.fd-in body::after { content: ""; position: fixed; inset: 0; z-index: 28; background: #ECE9E2; pointer-events: none; animation: fd-lift .6s ease forwards; } @keyframes fd-lift { to { opacity: 0; } }</style>
 </head>
@@ -4586,6 +4586,10 @@ html body footer.has-tab .fglass, html body footer .fglass { clip-path: inset(ca
       V.hidden = false; document.body.style.overflow = 'hidden'; requestAnimationFrame(() => V.classList.add('in'));
     }
     window.__vf = { P, B, open: f => openFilm(f) };
+    /* lien direct vers un film : dacamara.fr/#intervous */
+    const want = window.__H0 || '', wf = FILMS.find(x => x.id === want);
+    if (wf) setTimeout(() => { if (window.goToTab) window.goToTab('video'); const sl = sec.querySelector('[data-film="' + wf.id + '"]');
+      setTimeout(() => { if (sl) sec.scrollTo({ top: sl.offsetTop, behavior: 'auto' }); openFilm(wf); }, 500); }, 900);
     function close() { V.classList.remove('in'); const v = V.querySelector('video'); if (v) v.pause(); setTimeout(() => { V.hidden = true; V.querySelector('.nmv-frame').innerHTML = ''; }, 350); document.body.style.overflow = ''; }
     const flag = () => document.body.classList.toggle('vfilms', sec.classList.contains('cur') && sec.scrollTop > 40);
     sec.addEventListener('scroll', flag, { passive: true }); new MutationObserver(flag).observe(sec, { attributes: true, attributeFilter: ['class'] });
@@ -5209,7 +5213,7 @@ html body footer.fd-now :is(.fd-peek, .contact, .fd-arrow svg, .fd-arrow .fd-ar,
     veil.addEventListener('wheel', e => e.preventDefault(), { passive: false });
     f.appendChild(w.querySelector('.fd-x'));
     window.showIntro = open;
-    let seen = false; try { seen = sessionStorage.getItem('fdc-pop') === '1'; sessionStorage.setItem('fdc-pop', '1'); } catch (_) {}
+    let seen = !!(window.__FP && window.__FP[window.__H0]); try { seen = seen || sessionStorage.getItem('fdc-pop') === '1'; sessionStorage.setItem('fdc-pop', '1'); } catch (_) {}
     if (seen) document.documentElement.classList.remove('fd-first');
     if (!seen) {
       /* arrivée : le tiroir est déjà ouvert, sans animation ; on le recale après le calage du footer par le reste du site */
